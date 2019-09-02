@@ -33,7 +33,7 @@ class BatteryControllerEnvoyMeter extends BatteryController {
           this.meter.storage = meter.storage[0];
 
           resolve({
-            prodW:this.meter.prod.wNow,
+            prodW:-this.meter.prod.wNow,
             consW:this.meter.cons.wNow,
             netW:this.meter.net.wNow
           });
