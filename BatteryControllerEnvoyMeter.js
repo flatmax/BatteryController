@@ -48,4 +48,4 @@ class BatteryControllerEnvoyMeter extends BatteryController {
 }
 
 let batteryController = new BatteryControllerEnvoyMeter(ip);
-setInterval(batteryController.processHouseStats.bind(batteryController), 2000);
+setInterval(batteryController.processHouseStats.bind(batteryController), 4000);
