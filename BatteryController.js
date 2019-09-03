@@ -84,9 +84,12 @@ class BatteryController {
           return; // do nothing
       }
     }
-    if (totalCons>0 && totalCons>-this.uiW && this.runLevel>this.Nui)
+    // if (totalCons>0 && totalCons>-this.uiW && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
+    // Do we have any consumption ? Then move towards dischargning
+    if (totalCons>0 && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
       this.runLevel--;
-    if (totalCons<0 && totalCons<-this.bcW && this.runLevel<this.Nbc)
+    // Do we have production ? If we are producing more then the battery charger quantum then start charging
+    if (totalCons<0 && totalCons<-this.bcW && this.runLevel<this.Nbc) // we can increase run level towards deepest charging
       this.runLevel++;
     this.logState();
   }
