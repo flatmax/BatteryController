@@ -1,0 +1,10 @@
+{
+  "name" : "baseLoad0",
+  "baseLoad" : 1,
+  "bcW" : 100,
+  "bcWComment" : "Battery charger power consumed (positive Watts)",
+  "bcGPIOs" : [12, 6, 5],
+  "uiW" : -290,
+  "uiWComment" : "Micro inverter power generated (negative Watts)",
+  "uiGPIOs" : [26, 13, 16]
+}
