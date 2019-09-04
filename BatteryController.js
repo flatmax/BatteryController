@@ -21,7 +21,7 @@ Run level changes (in a continuous manner) when the net power exceeds a quantum 
 class BatteryController {
   /** Set basic class variables
   */
-  constructor(ip){
+  constructor(ip, hardwareController){
     this.ip=ip; // ip address on the LAN of the meter
     this.runLevel=0; // start in the idle runLevel
 
@@ -35,6 +35,8 @@ class BatteryController {
     this.Nui=-6; // Limit the total number of uInverters available
     this.Nbc=-this.Nui; // Limit the total number of battery chargers available (positive count)
     this.meter={}; // hold the meter data
+
+    this.hardwareController=hardwareController;
   }
 
   /** Implement this method to get the house power data from your meter.
@@ -91,6 +93,7 @@ class BatteryController {
     // Do we have production ? If we are producing more then the battery charger quantum then start charging
     if (totalCons<0 && totalCons<-this.bcW && this.runLevel<this.Nbc) // we can increase run level towards deepest charging
       this.runLevel++;
+    this.hardwareController.setRunLevel(this.runLevel);
     this.logState();
   }
 
@@ -98,6 +101,7 @@ class BatteryController {
     let totalCons=this.consW+this.prodW;
     // console.log(''+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' ~= '+Math.round(this.netW)+' W : runLevel '+this.runLevel);
     console.log(''+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' W : runLevel '+this.runLevel);
+    this.hardwareController.dumpState();
   }
 
   reportProdCons(){
