@@ -37,23 +37,31 @@ class HardwareController {
 
     // Turn on how every many devices are indicated - iterating through hardware
     for (let h=0; h<this.hardware.length && r!=0; h++) {
-      let rO=r;
-      for (let c=0; c<Math.abs(rO); c++){
-        // console.log('enter h='+h+' c='+c+' r='+r)
-        if (r>0) // we are consuming, so turn on chargers
-          r-=this.hardware[h].turnOnBC(c);
-        else // we are generating, so turn on uInv
-          r-=this.hardware[h].turnOnUI(c); // turnOnUI returns -1 on success, here r is increased
-        // console.log('exit h='+h+' c='+c+' r='+r)
+      let r0=r;
+      let C=Math.max(this.hardware[h].bcGPIOs.length, this.hardware[h].uiGPIOs.length);
+      for (let c=0; c<C; c++){
         if (r==0)
-          break;
+          if (r0>0) // we are consuming, so turn off excess chargers
+            this.hardware[h].turnOffBC(c);
+          else // we are producing so turn off excess micro inverters
+            this.hardware[h].turnOffUI(c);
+        else {
+          // console.log('enter h='+h+' c='+c+' r='+r)
+          if (r>0) // we are consuming, so turn on chargers
+            r-=this.hardware[h].turnOnBC(c);
+          else // we are generating, so turn on uInv
+            r-=this.hardware[h].turnOnUI(c); // turnOnUI returns -1 on success, here r is increased
+          // console.log('exit h='+h+' c='+c+' r='+r)
+        }
       }
     }
     return r;
   }
 
-  dumpState(){
+  dumpState(r){
     let s='';
+    if (r)
+      s+='r='+r+' ';
     this.hardware.forEach((hw) => {
       s+=hw.dumpState()+'\n';
     });
