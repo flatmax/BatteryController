@@ -61,6 +61,10 @@ class HardwareController {
   }
 }
 
+module.exports = {
+  HardwareController
+}
+
 if (!module.parent){ // if we are run as a script, then test
   let Hardware = require('./Hardware').Hardware;
   let hardware = new Hardware('Hardware.json');
@@ -70,12 +74,23 @@ if (!module.parent){ // if we are run as a script, then test
   //hc.addHardware(new HardwareController);
   console.log(hc)
   let r=hc.setRunLevel(1);
-  console.log('r='+r);
+  hc.dumpState(1);
+  r=hc.setRunLevel(-1);
+  hc.dumpState(-1);
   r=hc.setRunLevel(-2);
-  console.log('r='+r);
+  hc.dumpState(-2);
+  r=hc.setRunLevel(-3);
+  hc.dumpState(-3);
   r=hc.setRunLevel(-5);
-  console.log('r='+r);
+  hc.dumpState(-5);
+  r=hc.setRunLevel(1);
+  hc.dumpState(1);
+  r=hc.setRunLevel(2);
+  hc.dumpState(2);
+  r=hc.setRunLevel(3);
+  hc.dumpState(3);
   r=hc.setRunLevel(5);
-  console.log('r='+r);
-  hc.dumpState();
+  hc.dumpState(5);
+  r=hc.setRunLevel(-3);
+  hc.dumpState(-3);
 }
