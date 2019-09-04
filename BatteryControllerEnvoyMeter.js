@@ -47,5 +47,15 @@ class BatteryControllerEnvoyMeter extends BatteryController {
   }
 }
 
-let batteryController = new BatteryControllerEnvoyMeter(ip);
-setInterval(batteryController.processHouseStats.bind(batteryController), 4000);
+if (!module.parent){ // if we are run as a script, then test
+  let Hardware = require('./Hardware').Hardware;
+  let hardware = new Hardware('Hardware.json');
+
+  let HardwareController = require('./HardwareController').HardwareController;
+  let hc = new HardwareController;
+  hc.addHardware(hardware);
+
+
+  let batteryController = new BatteryControllerEnvoyMeter(ip, hc);
+  setInterval(batteryController.processHouseStats.bind(batteryController), 4000);
+}
