@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('fs');
+const GPIO = require('./GPIO').GPIO;
 
 class Hardware {
   constructor(jsonDefinition){
@@ -9,6 +10,12 @@ class Hardware {
     // merge the json data into the class member variables
     let rawData = fs.readFileSync(jsonDefinition);
     Object.assign(this, JSON.parse(rawData));
+
+    this.gpio = new GPIO;
+
+    // set to an idle state
+    this.bcGPIOs.forEach((gpio) => {this.gpio.write(gpio, 0);})
+    this.uiGPIOs.forEach((gpio) => {this.gpio.write(gpio, 0);})
   }
 
   // turn off all micro inverters
@@ -35,6 +42,16 @@ class Hardware {
     return this.setGPIO(this.bcGPIOs[which], 1);
   }
 
+  /** turn off a battery charger
+  @param which index (starting from 0) of which charger to turn off
+  @return 0 if not turned on, 1 on success
+  */
+  turnOffBC(which){
+    if (which<0 || which>=this.bcGPIOs.length) // if which is negative or larger then the number we have
+      return 0;
+    return this.setGPIO(this.bcGPIOs[which], 0);
+  }
+
   /** turn on a uInv
   @param which index (starting from 0) of which inverter to turn on
   @return 0 if not turned on, -1 on success
@@ -45,13 +62,29 @@ class Hardware {
     return -this.setGPIO(this.uiGPIOs[which], 1);
   }
 
+  /** turn off a uInv
+  @param which index (starting from 0) of which inverter to turn off
+  @return 0 if not turned on, -1 on success
+  */
+  turnOffUI(which){
+    if (which<0 || which>=this.uiGPIOs.length) // if which is negative or larger then the number we have
+      return 0;
+    return -this.setGPIO(this.uiGPIOs[which], 0);
+  }
+
   /** Set a GPIO line
   @param which GPIO
   @param the new value
   @return 0 on failure 1 on success
   */
   setGPIO(which, val){
-    console.log('set GPIO'+which+' '+val)
+    // console.log('set GPIO'+which+' '+val)
+    try {
+      this.gpio.write(which, val);
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
     return 1;
   }
 
@@ -59,7 +92,7 @@ class Hardware {
   @return The current value (0|1) of the pin
   */
   getGPIOState(which){
-    return 'unknown';
+    return this.gpio.read(which);
   }
 
   /** write out the current state to a string
