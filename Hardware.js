@@ -37,6 +37,20 @@ class Hardware {
     });
   }
 
+  /** Get the number of battery chargers
+  @return The number of BCs we have
+  */
+  getBCCnt(){
+    return this.bcGPIOs.length;
+  }
+
+  /** Get the number of uInverters
+  @return The number of UIs we have
+  */
+  getUICnt(){
+    return this.uiGPIOs.length;
+  }
+
   /** turn on a battery charger
   @param which index (starting from 0) of which charger to turn on
   @return 0 if not turned on, 1 on success
