@@ -99,8 +99,12 @@ class BatteryController {
 
   logState(){
     let totalCons=this.consW+this.prodW;
-    // console.log(''+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' ~= '+Math.round(this.netW)+' W : runLevel '+this.runLevel);
-    console.log(''+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' W : runLevel '+this.runLevel);
+    // console.log(this.meter.storage.type + ' N=' + this.meter.storage.activeCount + ' : ' + Math.round(this.meter.storage.wNow) + ' W');
+    // console.log(this.meter.storage.state + ' : ' + Math.round(this.meter.storage.whNow) + ' Wh, full : ' + this.meter.storage.percentFull + '%');
+    console.log('Date '+new Date().toISOString());
+    if (this.meter.storage)
+      console.log('Battery ('+this.meter.manufacturer+') '+this.meter.storage.state+' '+Math.round(this.meter.storage.wNow)+' W '+this.meter.storage.percentFull + '%');
+    console.log('Meter '+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' W : runLevel '+this.runLevel);
     this.hardwareController.dumpState();
   }
 
