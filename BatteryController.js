@@ -32,11 +32,12 @@ class BatteryController {
     this.consW=0; // how much power is our house consuming
     this.WMismatchThresh=50; // how many W can differ between a known consW-prodW and a meter reported net Watts (total Watts)
 
-    this.Nui=-6; // Limit the total number of uInverters available
-    this.Nbc=-this.Nui; // Limit the total number of battery chargers available (positive count)
+    this.hardwareController=hardwareController;
+
+    this.Nui=-this.hardwareController.getUICnt(); // Limit the total number of uInverters available to that reported by the hardware controller (positive count but here should be a negative value)
+    this.Nbc=this.hardwareController.getBCCnt(); // Limit the total number of battery chargers  available to that reported by the hardware controller
     this.meter={}; // hold the meter data
 
-    this.hardwareController=hardwareController;
   }
 
   /** Implement this method to get the house power data from your meter.
