@@ -56,7 +56,29 @@ if (!module.parent){ // if we are run as a script, then test
   let hc = new HardwareController;
   hc.addHardware(hardware);
 
-
   let batteryController = new BatteryControllerEnvoyMeter(ip, hc);
   setInterval(batteryController.processHouseStats.bind(batteryController), 4000);
+
+  function turnOff(hardware){
+    hardware.turnOffAll();
+  }
+
+  // process.on('SIGKILL', () => {
+  //   console.log('sigkill')
+  //   turnOff(hardware);
+  // })
+  process.on('SIGTERM', () => {
+    console.log('sigterm')
+    turnOff(hardware);
+  })
+  process.on('exit', (code) => {
+    console.log('exit')
+    turnOff(hardware);
+  });
+
+  // test exit
+  // setTimeout(() => {
+  //       // process.exit(0);
+  //       throw new Error('throw exit');
+  //     }, 6000).unref();
 }
