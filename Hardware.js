@@ -18,6 +18,11 @@ class Hardware {
     this.uiGPIOs.forEach((gpio) => {this.gpio.write(gpio, 0);})
   }
 
+  turnOffAll(){
+    this.turnOffAllUInv();
+    this.turnOffAllBC();
+  }
+
   // turn off all micro inverters
   turnOffAllUInv(){
     this.uiGPIOs.forEach((gpio) => {
