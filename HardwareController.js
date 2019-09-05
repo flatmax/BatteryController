@@ -58,6 +58,9 @@ class HardwareController {
     return r;
   }
 
+  /** dump the system state
+  @param r (optional) The current run level to print
+  */
   dumpState(r){
     let s='';
     if (r)
@@ -66,6 +69,26 @@ class HardwareController {
       s+=hw.dumpState()+'\n';
     });
     console.log(s)
+  }
+
+  /** Get the total number of battery chargers from all hardware
+  */
+  getBCCnt(){
+    let N=0;
+    this.hardware.forEach((hw) => {
+      N+=hw.getBCCnt();
+    });
+    return N;
+  }
+
+  /** Get the total number of micro inverters from all hardware
+  */
+  getUICnt(){
+    let N=0;
+    this.hardware.forEach((hw) => {
+      N+=hw.getUICnt();
+    });
+    return N;
   }
 }
 
