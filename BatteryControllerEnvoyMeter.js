@@ -26,6 +26,7 @@ class BatteryControllerEnvoyMeter extends BatteryController {
         resp.on('end', () => {
           let meter=JSON.parse(data);
           // console.log(data)
+          this.meter.manufacturer = 'Enphase';
           this.meter.inv = meter.production[0];
           this.meter.prod = meter.production[1];
           this.meter.cons = meter.consumption[0];
