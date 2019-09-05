@@ -98,7 +98,7 @@ class Hardware {
   /** write out the current state to a string
   */
   dumpState(){
-      let s=this.name;
+      let s='uBattery '+this.name;
       s+=' bc = [';
       this.bcGPIOs.forEach((gpio) => {s+=' '+this.getGPIOState(gpio)});
       s+=' ] ui = [';
