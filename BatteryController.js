@@ -27,7 +27,7 @@ class BatteryController {
     this.ip=ip; // ip address on the LAN of the meter
     this.runLevel=0; // start in the idle runLevel
 
-    this.bcW=100; // how much power does each battery charger consume
+    this.bcW=200; // how much power does each battery charger consume
     this.uiW=-290; // how much power does each uInverter generate
 
     this.prodW=0; // how much power is our solar system generating
