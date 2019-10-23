@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+
 /**
 This home micro battery controller will manager charging and discharging of batteries.
 It will do the following :
@@ -37,7 +39,14 @@ class BatteryController {
     this.Nui=-this.hardwareController.getUICnt(); // Limit the total number of uInverters available to that reported by the hardware controller (positive count but here should be a negative value)
     this.Nbc=this.hardwareController.getBCCnt(); // Limit the total number of battery chargers  available to that reported by the hardware controller
     this.meter={}; // hold the meter data
+  }
 
+  /** Set a log file name.
+  @param fn The file name
+  */
+  setLogFile(fn){
+    this.logFileName=fn;
+    console.log('log will be written to the file : '+fn);
   }
 
   /** Implement this method to get the house power data from your meter.
@@ -99,14 +108,27 @@ class BatteryController {
   }
 
   logState(){
+    let s='';
     let totalCons=this.consW+this.prodW;
     // console.log(this.meter.storage.type + ' N=' + this.meter.storage.activeCount + ' : ' + Math.round(this.meter.storage.wNow) + ' W');
     // console.log(this.meter.storage.state + ' : ' + Math.round(this.meter.storage.whNow) + ' Wh, full : ' + this.meter.storage.percentFull + '%');
-    console.log('Date '+new Date().toISOString());
+    s+='Date '+new Date().toISOString()+'\n';
     if (this.meter.storage)
-      console.log('Battery ('+this.meter.manufacturer+') '+this.meter.storage.state+' '+Math.round(this.meter.storage.wNow)+' W '+this.meter.storage.percentFull + '%');
-    console.log('Meter '+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' W : runLevel '+this.runLevel);
-    this.hardwareController.dumpState();
+      s+='Battery ('+this.meter.manufacturer+') '+this.meter.storage.state+' '+Math.round(this.meter.storage.wNow)+' W '+this.meter.storage.percentFull + '%\n';
+    s+='Meter '+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' W : runLevel '+this.runLevel+'\n';
+    s+=this.hardwareController.dumpState();
+
+    if (this.logFileName != null)
+      fs.appendFile(this.logFileName, s+'\n', function (err) {
+        if (err) {
+          console.log(err);
+          console.log('state not saved to file ('+this.logFileName+'), printing to console instead');
+          console.log(s);
+        }
+      });
+    else {
+      console.log(s);
+    }
   }
 
   reportProdCons(){

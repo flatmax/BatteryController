@@ -68,7 +68,7 @@ class HardwareController {
     this.hardware.forEach((hw) => {
       s+=hw.dumpState()+'\n';
     });
-    console.log(s)
+    return s;
   }
 
   /** Get the total number of battery chargers from all hardware
