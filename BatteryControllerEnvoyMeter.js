@@ -57,8 +57,8 @@ if (!module.parent){ // if we are run as a script, then test
   hc.addHardware(hardware);
 
   let batteryController = new BatteryControllerEnvoyMeter(ip, hc);
-  batteryController.setLogFile('/root/batteryLog.txt');
-  setInterval(batteryController.processHouseStats.bind(batteryController), 4000);
+  batteryController.setBaseLogFile('/root/batteryLog');
+  setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
 
   function turnOff(hardware){
     hardware.turnOffAll();

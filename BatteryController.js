@@ -41,12 +41,12 @@ class BatteryController {
     this.meter={}; // hold the meter data
   }
 
-  /** Set a log file name.
+  /** Set a log file base name. The full name is created in logFileRotate
   @param fn The file name
   */
-  setLogFile(fn){
-    this.logFileName=fn;
-    console.log('log will be written to the file : '+fn);
+  setBaseLogFile(fn){
+    this.baseLogFileName=fn;
+    console.log('log will be written to files based on the name : '+fn);
   }
 
   /** Implement this method to get the house power data from your meter.
@@ -111,9 +111,25 @@ class BatteryController {
       this.runLevel++;
 
     this.hardwareController.setRunLevel(this.runLevel);
+    this.logFileRotate(); // daily log file rotation
     this.logState();
   }
 
+  /** Sets the logFileName to the baseLogFileName+"yyyy-mm-dd.txt"
+  */
+  logFileRotate(){
+    if (this.baseLogFileName != null){
+      let d = new Date;
+      let day = ("0" + d.getDate()).slice(-2);
+      let mon = ("0" + (d.getMonth() + 1)).slice(-2);
+      let year = d.getFullYear();
+      let ymd=year+'-'+mon+'-'+day;
+      this.logFileName=this.baseLogFileName+'.'+ymd+'.txt';
+    }
+  }
+
+  /** Concatenates the system state to a string. If the logFileName exists, it appends that to the log file.
+  */
   logState(){
     let s='';
     let totalCons=this.consW+this.prodW;
