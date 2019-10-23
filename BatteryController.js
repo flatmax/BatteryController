@@ -96,13 +96,20 @@ class BatteryController {
           return; // do nothing
       }
     }
+
+    let pumpGap=Math.abs(1.5*this.bcW+this.uiW); // Reduce pumping using this Wattage gap between turn on and offs
+    // console.log(this.bcW)
+    // console.log(this.uiW)
+    // console.log(pumpGap)
     // if (totalCons>0 && totalCons>-this.uiW && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
     // Do we have any consumption ? Then move towards dischargning
-    if (totalCons>0 && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
+    // if (totalCons>0 && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
+    if (totalCons>0 && totalCons>pumpGap && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
       this.runLevel--;
     // Do we have production ? If we are producing more then the battery charger quantum then start charging
     if (totalCons<0 && totalCons<-this.bcW && this.runLevel<this.Nbc) // we can increase run level towards deepest charging
       this.runLevel++;
+
     this.hardwareController.setRunLevel(this.runLevel);
     this.logState();
   }
