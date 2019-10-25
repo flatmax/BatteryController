@@ -30,6 +30,8 @@ class BatteryController {
     this.bcW=200; // how much power does each battery charger consume
     this.uiW=-290; // how much power does each uInverter generate
 
+    this.pumpGap=50; // how many Watts above 0 (consumption) before we reduce the run level ?
+
     this.prodW=0; // how much power is our solar system generating
     this.consW=0; // how much power is our house consuming
     this.WMismatchThresh=50; // how many W can differ between a known consW-prodW and a meter reported net Watts (total Watts)
@@ -97,14 +99,13 @@ class BatteryController {
       }
     }
 
-    let pumpGap=Math.abs(1.5*this.bcW+this.uiW); // Reduce pumping using this Wattage gap between turn on and offs
     // console.log(this.bcW)
     // console.log(this.uiW)
-    // console.log(pumpGap)
+    // console.log(this.pumpGap)
     // if (totalCons>0 && totalCons>-this.uiW && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
     // Do we have any consumption ? Then move towards dischargning
     // if (totalCons>0 && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
-    if (totalCons>0 && totalCons>pumpGap && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
+    if (totalCons>0 && totalCons>this.pumpGap && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
       this.runLevel--;
     // Do we have production ? If we are producing more then the battery charger quantum then start charging
     if (totalCons<0 && totalCons<-this.bcW && this.runLevel<this.Nbc) // we can increase run level towards deepest charging
