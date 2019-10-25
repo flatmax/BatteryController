@@ -1,0 +1,7 @@
+{
+  "name": "BatteryController",
+  "short_name": "BatteryController",
+  "description": "Visualise battery log data",
+  "start_url": "/",
+  "display": "standalone"
+}
