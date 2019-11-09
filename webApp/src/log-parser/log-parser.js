@@ -33,6 +33,7 @@ class LogParser extends PolymerElement {
   }
 
   connectedCallback(){
+    super.connectedCallback();
     this.table = new Table;
     this.fetchLogFiles(this.daysBack);
   }
