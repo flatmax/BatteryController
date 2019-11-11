@@ -2,6 +2,10 @@
 
 let HardwareController = require('./HardwareController').HardwareController;
 
+/** A networked class to controll hardware.
+This is the server which implements the switching of BCs and UIs. It returns
+the results using the JRPC protocol.
+*/
 class HardwareControllerServer extends HardwareController {
   constructor(){
     super();
