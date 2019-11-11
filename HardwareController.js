@@ -1,7 +1,10 @@
 'use strict';
 
-class HardwareController {
+let JRPC = require('./JRPC').JRPC;
+
+class HardwareController extends JRPC {
   constructor(){
+    super();
     this.hardware = [];
   }
 
@@ -55,42 +58,48 @@ class HardwareController {
         }
       }
     }
-    return r;
+
+    return super.setRunLevel(r);
   }
 
   /** dump the system state
   @param r (optional) The current run level to print
+  @param s (optional) The string s
+  @return A string describing the current state of each hardware attached to the system
   */
-  dumpState(r){
-    let s='';
+  dumpState(r, s){
+    if (s==null)
+      s='';
     if (r)
       s+='r='+r+' ';
     this.hardware.forEach((hw) => {
       s+=hw.dumpState()+'\n';
     });
-    return s;
+    return super.dumpState(s);
   }
 
   /** Get the total number of battery chargers from all hardware
   @return The number of battery chargers
+  @param n (unused) The BC cnt
   */
-  getBCCnt(){
+  getBCCnt(n){
     let N=0;
     this.hardware.forEach((hw) => {
       N+=hw.getBCCnt();
     });
-    return N;
+    return super.getBCCnt(N);
   }
 
   /** Get the total number of micro inverters from all hardware
   @return The number of micro inverters on the system
+  @param n (unused) The UI cnt
   */
-  getUICnt(){
+  getUICnt(n){
     let N=0;
     this.hardware.forEach((hw) => {
       N+=hw.getUICnt();
     });
-    return N;
+    return super.getUICnt(N);
   }
 }
 
@@ -104,33 +113,33 @@ if (!module.parent){ // if we are run as a script, then test
 
   let hc = new HardwareController;
   hc.addHardware(hardware);
-  //hc.addHardware(new HardwareController);
-  console.log(hc)
+  // //hc.addHardware(new HardwareController);
+  // console.log(hc)
   let r;
-  // r=hc.setRunLevel(1);
-  // hc.dumpState(1);
+  // // r=hc.setRunLevel(1);
+  // // hc.dumpState(1);
+  // // r=hc.setRunLevel(-1);
+  // // hc.dumpState(-1);
+  // // r=hc.setRunLevel(-2);
+  // // hc.dumpState(-2);
+  // // r=hc.setRunLevel(-3);
+  // // hc.dumpState(-3);
+  // // r=hc.setRunLevel(-5);
+  // // hc.dumpState(-5);
+  // // r=hc.setRunLevel(1);
+  // // hc.dumpState(1);
+  // // r=hc.setRunLevel(2);
+  // // hc.dumpState(2);
+  // // r=hc.setRunLevel(3);
+  // // hc.dumpState(3);
+  // // r=hc.setRunLevel(5);
+  // // hc.dumpState(5);
   // r=hc.setRunLevel(-1);
-  // hc.dumpState(-1);
+  // console.log(hc.dumpState(-1));
   // r=hc.setRunLevel(-2);
-  // hc.dumpState(-2);
-  // r=hc.setRunLevel(-3);
-  // hc.dumpState(-3);
-  // r=hc.setRunLevel(-5);
-  // hc.dumpState(-5);
-  // r=hc.setRunLevel(1);
-  // hc.dumpState(1);
-  // r=hc.setRunLevel(2);
-  // hc.dumpState(2);
-  // r=hc.setRunLevel(3);
-  // hc.dumpState(3);
-  // r=hc.setRunLevel(5);
-  // hc.dumpState(5);
-  r=hc.setRunLevel(-1);
-  console.log(hc.dumpState(-1));
-  r=hc.setRunLevel(-2);
-  console.log(hc.dumpState(-2));
-  r=hc.setRunLevel(-3);
-  console.log(hc.dumpState(-3));
-  r=hc.setRunLevel(0);
-  console.log(hc.dumpState(0));
+  // console.log(hc.dumpState(-2));
+hc.setRunLevel(-3);
+  // console.log(hc.dumpState(-3));
+  // r=hc.setRunLevel(0);
+  // console.log(hc.dumpState(0));
 }
