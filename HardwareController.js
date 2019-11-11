@@ -19,7 +19,7 @@ class HardwareController {
   uInverters (generating power) we have turned on. For example if we turned on two
   chargers, return r=r-2; If we turned on two uInverters, then return r=r+2;
   @param r The run level
-  @return The new value for r.
+  @return The new value for r
   */
   setRunLevel(r){
     // first turn off what must be off
@@ -72,6 +72,7 @@ class HardwareController {
   }
 
   /** Get the total number of battery chargers from all hardware
+  @return The number of battery chargers
   */
   getBCCnt(){
     let N=0;
@@ -82,6 +83,7 @@ class HardwareController {
   }
 
   /** Get the total number of micro inverters from all hardware
+  @return The number of micro inverters on the system
   */
   getUICnt(){
     let N=0;
