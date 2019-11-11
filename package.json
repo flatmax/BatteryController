@@ -1,0 +1,18 @@
+{
+  "name": "batterycontroller",
+  "version": "1.0.0",
+  "description": "Home battery contoller",
+  "main": "BatteryController.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matt Flax <flatmax@flatmax.org>",
+  "license": "ISC",
+  "dependencies": {
+    "jrpc": "^3.1.2",
+    "ws": "^7.2.0"
+  }
+}
