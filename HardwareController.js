@@ -90,10 +90,17 @@ class HardwareController {
     let s='';
     if (r)
       s+='r='+r+' ';
+    let states=[]; // collect states asynchronously for speed
     this.hardware.forEach((hw) => {
-      s+=hw.dumpState()+'\n';
+      states.push(hw.dumpState());
     });
-    return s;
+    return Promise.all(states)
+    .then(sr => { // concat states for each battery
+      sr.forEach(srs=>{
+        s+=srs.result+'\n';
+      });
+      return s;
+    })
   }
 
   /** Get the total number of battery chargers from all hardware

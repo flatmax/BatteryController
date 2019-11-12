@@ -15,7 +15,10 @@ if (!module.parent){ // if we are run as a script, then test
   hCont.addHardware(hCli);
 
   hCont.setRunLevel(-4).then((r)=>{
-    console.log(r);
+    console.log('runLevel = '+r);
+    return hCont.dumpState();
+  }).then(s=>{
+    console.log(s)
   });
   // let batteryController = new BatteryControllerEnvoyMeter(ip, hc);
   // batteryController.setBaseLogFile('/root/batteryLog');

@@ -74,6 +74,13 @@ class JRPC {
         return new Promise((resolve, reject) => {
           resolve(this.turnOffUI(args[0]));
         });
+      },
+      dumpState: (args)=>{
+        return new Promise((resolve, reject) => {
+          let s=this.dumpState();
+          console.log('s '+s)
+          resolve(s);
+        });
       }
     });
 
@@ -188,6 +195,20 @@ class JRPC {
     else // server
       console.log("JRPC::turnOffUI : not overloaded, returning 0");
     return 0;
+  }
+
+  /** write out the current state to a string
+  @return a string defining the hardware state
+  */
+  dumpState(){
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client){
+      let s = this.client.request('dumpState', []);
+      return s;
+    } else // server
+      console.log("JRPC::dumpState : not overloaded, returning ''");
+    return '';
   }
 }
 

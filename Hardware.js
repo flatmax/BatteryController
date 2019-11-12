@@ -147,22 +147,24 @@ class Hardware extends JRPC {
   }
 
   /** write out the current state to a string
+  @return a string defining the hardware state
   */
   dumpState(){
-      let s='uBattery '+this.name;
-      s+=' bc = [';
-      this.bcGPIOs.forEach((gpio) => {s+=' '+this.getGPIOState(gpio)});
-      s+=' ] ui = [';
-      this.uiGPIOs.forEach((gpio) => {s+=' '+this.getGPIOState(gpio)});
-      s+=' ]'
-      return s;
+    if (this.client) // the client returns whatever the network returns
+      return super.dumpState();
+    let s='uBattery '+this.name;
+    s+=' bc = [';
+    this.bcGPIOs.forEach((gpio) => {s+=' '+this.getGPIOState(gpio)});
+    s+=' ] ui = [';
+    this.uiGPIOs.forEach((gpio) => {s+=' '+this.getGPIOState(gpio)});
+    s+=' ]'
+    return s;
   }
 }
 
 module.exports = {
   Hardware
 }
-
 
 if (!module.parent){ // if we are run as a script, then test
   // test
