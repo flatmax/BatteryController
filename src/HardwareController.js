@@ -23,6 +23,7 @@ class HardwareController {
   @return The new value for r
   */
   async setRunLevel(r){
+    console.log('HardwareController::setRunLevel : '+r)
     let shutdownPs = [];
     // first turn off what must be off
     if (r>=0) // we are charging, turn off all uInv

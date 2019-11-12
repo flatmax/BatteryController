@@ -100,7 +100,9 @@ class BatteryController {
     }
 
     // console.log(this.bcW)
+    // console.log(totalCons)
     // console.log(this.uiW)
+    // console.log(this.Nbc)
     // console.log(this.pumpGap)
     // if (totalCons>0 && totalCons>-this.uiW && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
     // Do we have any consumption ? Then move towards dischargning

@@ -52,7 +52,7 @@ module.exports = {
   BatteryControllerEnvoyMeter
 }
 
-if (!module.parent){ // if we are run as a script, then test
+if (!module.parent){ // if we are run as a script, then test - this was used when batteries weren't networked - however hasn't been tested with non-networked hardware since updating to networked batteries.
   let Hardware = require('./Hardware').Hardware;
   let hardware = new Hardware('Hardware.json');
 
