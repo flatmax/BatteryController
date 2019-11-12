@@ -22,7 +22,7 @@ if (!module.parent){ // if we are run as a script, then run as the networked bat
   // });
   let batteryController = new BatteryControllerEnvoyMeter(host, hCont);
   batteryController.setBaseLogFile('/tmp/batteryLog');
-  setInterval(batteryController.processHouseStats.bind(batteryController), 2000);
+  setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
 
   function turnOff(hardware){
     hardware.turnOffAll();
