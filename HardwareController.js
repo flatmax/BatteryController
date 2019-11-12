@@ -22,16 +22,16 @@ class HardwareController {
   @param r The run level
   @return The new value for r
   */
-  setRunLevel(r){
-    let tasks = [];
+  async setRunLevel(r){
+    let shutdownPs = [];
     // first turn off what must be off
     if (r>=0) // we are charging, turn off all uInv
       this.hardware.forEach((hw) => {
-        tasks.push(hw.turnOffAllUInv());
+        shutdownPs.push(hw.turnOffAllUInv());
       });
     if (r<=0) // we are generating, turn off all chargers
       this.hardware.forEach((hw) => {
-        tasks.push(hw.turnOffAllBC());
+        shutdownPs.push(hw.turnOffAllBC());
       });
 
     // no need to wait here as the GPIOs for positive run levels are not in the set of GPIOs for negative run levels
@@ -39,54 +39,46 @@ class HardwareController {
     if (r==0) // nothing to turn on, so return.
       return 0;
 
+    // find how many devices each battery has of each type - this allows batteries to change with time for whatever reason
     let nBCPs=[], nUIPs=[];
     for (let h=0; h<this.hardware.length; h++) {
       nBCPs.push(this.hardware[h].getBCCnt());
       nUIPs.push(this.hardware[h].getUICnt());
     }
 
-    return Promise.all(nBCPs).then((nBCsIn)=>{ // wait till we know how many BCs and UIs there are on all hardware types
-      return Promise.all(nUIPs).then((nUIsIn)=>{ // wait till we know how many BCs and UIs there are on all hardware types
-        let nBCs=[];
-        nBCsIn.forEach((nbc)=>nBCs.push(nbc.result));
-        let nUIs=[];
-        nUIsIn.forEach((nui)=>nUIs.push(nui.result));
-        console.log(nUIs)
-        tasks=[];
-        let tasksNoSum=[];
-        // Turn on how every many devices are indicated - iterating through hardware
-        for (let h=0; h<this.hardware.length && r!=0; h++) {
-          let r0=r;
-          let C=Math.max(nBCs[h], nUIs[h]);
-          for (let c=0; c<C; c++){
-            if (r==0)
-              if (r0>0) // we are consuming, so turn off excess chargers
-                tasksNoSum.push(this.hardware[h].turnOffBC(c));
-              else // we are producing so turn off excess micro inverters
-                tasksNoSum.push(this.hardware[h].turnOffUI(c));
-            else {
-              // console.log('enter h='+h+' c='+c+' r='+r)
-              if (r>0) // we are consuming, so turn on chargers
-                tasks.push(this.hardware[h].turnOnBC(c));
-              else // we are generating, so turn on uInv
-                tasks.push(this.hardware[h].turnOnUI(c)); // turnOnUI returns -1 on success, here r is increased
-              // console.log('exit h='+h+' c='+c+' r='+r)
-            }
+    // For each of the returned promises, find their results
+    // then step through devices until we either run out of devices or runlevel = 0
+    return Promise.all([nBCPs, nUIPs, shutdownPs].map(Promise.all.bind(Promise)))
+    .then(async prmss => {
+      let nBCsIn=prmss[0]; // battery charger counts per hardware (as a resolved promise)
+      let nUIsIn=prmss[1]; // micro inverter counts per hardware (as a resolved promise)
+      let nBCs=[];
+      nBCsIn.forEach((nbc)=>nBCs.push(nbc.result));
+      let nUIs=[];
+      nUIsIn.forEach((nui)=>nUIs.push(nui.result));
+      // Turn on how ever many devices are indicated - iterating through hardware
+      // stop at run level 0 if we hit it !
+      for (let h=0; h<this.hardware.length && r!=0; h++) {
+        let r0=r;
+        let C=Math.max(nBCs[h], nUIs[h]);
+        for (let c=0; c<C; c++){
+          if (r==0)
+            if (r0>0) // we are consuming, so turn off excess chargers
+              await this.hardware[h].turnOffBC(c);
+            else // we are producing so turn off excess micro inverters
+              await this.hardware[h].turnOffUI(c);
+          else {
+            let res;
+            // console.log('enter h='+h+' c='+c+' r='+r)
+            if (r>0) // we are consuming, so turn on chargers
+              res = await this.hardware[h].turnOnBC(c);
+            else // we are generating, so turn on uInv
+              res = await this.hardware[h].turnOnUI(c); // turnOnUI returns -1 on success, here r is increased
+            r-=res.result;
           }
-
-          return Promise.all(tasksNoSum).then(()=>{ // wait for tasks no sum to return
-            // cumulative subtract for r ...
-            return Promise.all(tasks).then((drp)=>{ // wait for summing tasks to return
-              console.log(drp)
-              drp.forEach((rp)=> {
-                r-=rp.result;
-              });
-              console.log('returning r='+r)
-              return r;
-            });
-          });
-        };
-      });
+        }
+        return r;
+      };
     });
   }
 
