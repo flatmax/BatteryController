@@ -119,9 +119,11 @@ class BatteryController {
     if (totalCons<0 && totalCons<-this.bcW && this.runLevel<this.Nbc) // we can increase run level towards deepest charging
       this.runLevel++;
 
-    this.hardwareController.setRunLevel(this.runLevel);
-    this.logFileRotate(); // daily log file rotation
-    this.logState();
+    this.hardwareController.setRunLevel(this.runLevel)
+    .then(()=>{
+      this.logFileRotate(); // daily log file rotation
+      this.logState();
+    });
   }
 
   /** Sets the logFileName to the baseLogFileName+"yyyy-mm-dd.txt"
