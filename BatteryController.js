@@ -131,7 +131,7 @@ class BatteryController {
 
   /** Concatenates the system state to a string. If the logFileName exists, it appends that to the log file.
   */
-  logState(){
+  async logState(){
     let s='';
     let totalCons=this.consW+this.prodW;
     // console.log(this.meter.storage.type + ' N=' + this.meter.storage.activeCount + ' : ' + Math.round(this.meter.storage.wNow) + ' W');
@@ -140,7 +140,7 @@ class BatteryController {
     if (this.meter.storage)
       s+='Battery ('+this.meter.manufacturer+') '+this.meter.storage.state+' '+Math.round(this.meter.storage.wNow)+' W '+this.meter.storage.percentFull + '%\n';
     s+='Meter '+Math.round(this.consW)+' + '+Math.round(this.prodW)+' = '+Math.round(totalCons)+' W : runLevel '+this.runLevel+'\n';
-    s+=this.hardwareController.dumpState();
+    s+= await this.hardwareController.dumpState();
 
     if (this.logFileName != null)
       fs.appendFile(this.logFileName, s+'\n', function (err) {
