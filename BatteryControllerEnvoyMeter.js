@@ -48,6 +48,10 @@ class BatteryControllerEnvoyMeter extends BatteryController {
   }
 }
 
+module.exports = {
+  BatteryControllerEnvoyMeter
+}
+
 if (!module.parent){ // if we are run as a script, then test
   let Hardware = require('./Hardware').Hardware;
   let hardware = new Hardware('Hardware.json');
