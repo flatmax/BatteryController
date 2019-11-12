@@ -1,113 +1,202 @@
 "use strict";
 
-let WebSocketServer = require('ws').Server;
-let Remote = require('jrpc');
-let assert = require('assert')
+const jayson = require('jayson/promise');
 
-let fs = require('fs');
-let https = require('https'); // require modules for secure socket connection
-
+/** JRPC protocol for getting hardware talking to a hardware controller over the network
+*/
 class JRPC {
+  /** Constructor sets the default port
+  */
+  constructor(){
+      this.port=9100;
+  }
+
+  /** Connect to a server
+  @param params host and port if required for example params = {host : "127.0.0.1", port: 9100}
+  */
+  connectToServer(params){
+    let cp={};
+    if (params){
+      if (params.port)
+        this.port = params.port;
+      if (params.host)
+        cp.host=params.host;
+    }
+    cp.port=this.port;
+    this.client = jayson.client.http(cp);
+  }
+
+  /** Create a jayson server and add the methods
+  */
   startServer(port){
     // currently unencrypted, but can make encrypted if we generate certs.
-    if(port == null)
-      this.wss = new WebSocketServer({port: 9100}); // create the websocket
-    else
-      this.wss = new WebSocketServer({port: port}); // create the websocket
-
-    assert(this.wss.parent == null, 'wss.parent already exists, this needs upgrade.')
-    this.wss.on('connection', this.setupRemote, this);
-    this.wss.parent=this;
-  }
-
-  /** Function called by the WebSocketServer once 'connection' is fired
-  \param ws The web socket created by the web socket server
-  */
-  setupRemote(ws){
-    let parent = this.parent;
-    let remote = new Remote({remoteTimeout: this.parent.remoteTimeout});
-    if (parent.remote==null)
-      parent.remote = [remote];
-    else
-      parent.remote.push(remote);
-
-    parent.classes.forEach(function(c){
-      remote.expose(c);
-      remote.upgrade();
-    });
-
-    // Each new connection gets a unique handler
-    ws.on('message', function(msg) {
-      // console.log("Message : "+msg);
-      remote.receive(msg);
-    });
-
-    // Let JRPC send requests and responses continuously
-    remote.setTransmitter(function(msg, next) {
-      // console.log("Starting connection : "+msg);
-      try {
-        ws.send(msg);
-        return next(false);
-      } catch (e) {
-        console.log(e)
-        return next(true);
+    if(port != null)
+      this.port=port;
+    this.server=jayson.server({
+      turnOffAllUInv: (args)=>{
+        return new Promise((resolve, reject) => {
+          this.turnOffAllUInv();
+          resolve();
+        });
+      },
+      turnOffAllBC: (args)=>{
+        return new Promise((resolve, reject) => {
+          this.turnOffAllBC();
+          resolve();
+        });
+      },
+      getBCCnt: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.getBCCnt());
+        });
+      },
+      getUICnt: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.getUICnt());
+        });
+      },
+      turnOnBC: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.turnOnBC(args[0]));
+        });
+      },
+      turnOffBC: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.turnOffBC(args[0]));
+        });
+      },
+      turnOnUI: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.turnOnUI(args[0]));
+        });
+      },
+      turnOffUI: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.turnOffUI(args[0]));
+        });
       }
     });
+
+    this.server.http().listen(this.port, ()=>{
+      console.log('JRPC::startServer : listening on port '+this.port);
+    });
   }
 
-  /** Given a run level, turn on either consume power (r>0) or generate power (r<0).
-  Attempt to turn on all r chargers or inverters as required.
-  The return value is r minus the number of battery chargers (consuming power) or
-  uInverters (generating power) we have turned on. For example if we turned on two
-  chargers, return r=r-2; If we turned on two uInverters, then return r=r+2;
-  @param r The run level
-  @return The new value for r
-  */
-  setRunLevel(r){
-    if (r==null)
-      throw(new Error("JRPC::setRunLevel r==null, this shouldn't happen"));
-    if (this.wss) // if we have a functioning websocket
-      return next(null,r);
-    return r;
+  /// turn off all micro inverters
+  turnOffAllUInv(){
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('turnOffAllUInv', []);
+    else // server
+      console.log("JRPC::turnOffAllUInv : not overloaded, returning 0");
+    return 0;
   }
 
-  /** dump the system state
-  @param r (optional) The current run level to print
-  @return A string describing the current state of each hardware attached to the system
-  */
-  dumpState(r, s){
-    if (s==null)
-      throw('JRPC::dumpState s==null, this shouldn\'t happen');
-    if (this.wss) // if we have a functioning websocket
-      return next(null,s);
-    return s;
+  /// turn off all battery chargers
+  turnOffAllBC(){
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('turnOffAllBC', []);
+    else // server
+      console.log("JRPC::turnOffAllBC : not overloaded, returning 0");
+    return 0;
   }
 
   /** Get the total number of battery chargers from all hardware
-  @param n (unused) The BC cnt
   @return The number of battery chargers
   */
-  getBCCnt(n){
-    if (n==null)
-      throw('JRPC::getBCCnt n==null, this shouldn\'t happen');
-    if (this.wss) // if we have a functioning websocket
-      return next(null,n);
-    return n;
+  getBCCnt(){
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('getBCCnt', []);
+    else // server
+      console.log("JRPC::getBCCnt : not overloaded, returning -1");
+    return -1;
   }
 
   /** Get the total number of micro inverters from all hardware
-  @param n (unused) The UI cnt
   @return The number of micro inverters on the system
   */
-  getUICnt(n){
-    if (n==null)
-      throw('JRPC::getUICnt n==null, this shouldn\'t happen');
-    if (this.wss) // if we have a functioning websocket
-      return next(null,n);
-    return n;
+  getUICnt(){
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('getUICnt', []);
+    else // server
+      console.log("JRPC::getUICnt : not overloaded, returning -1");
+    return -1;
+  }
+
+  /** turn on a battery charger
+  @param which index (starting from 0) of which charger to turn on
+  @return 0 if not turned on, 1 on success
+  */
+  turnOnBC(which){
+    console.log('JRPC::turnOnBC : '+which);
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('turnOnBC', [which]);
+    else // server
+      console.log("JRPC::turnOnBC : not overloaded, returning 0");
+    return 0;
+  }
+
+  /** turn off a battery charger
+  @param which index (starting from 0) of which charger to turn off
+  @return 0 if not turned on, 1 on success
+  */
+  turnOffBC(which){
+    console.log('JRPC::turnOffBC : '+which);
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('turnOffBC', [which]);
+    else // server
+      console.log("JRPC::turnOffBC : not overloaded, returning 0");
+    return 0;
+  }
+
+  /** turn on a uInv
+  @param which index (starting from 0) of which inverter to turn on
+  @return 0 if not turned on, -1 on success
+  */
+  turnOnUI(which){
+    console.log('JRPC::turnOnUI : '+which);
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('turnOnUI', [which]);
+    else // server
+      console.log("JRPC::turnOnUI : not overloaded, returning 0");
+    return 0;
+  }
+
+  /** turn off a uInv
+  @param which index (starting from 0) of which inverter to turn off
+  @return 0 if not turned on, -1 on success
+  */
+  turnOffUI(which){
+    console.log('JRPC::turnOffUI : '+which);
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('turnOffUI', [which]);
+    else // server
+      console.log("JRPC::turnOffUI : not overloaded, returning 0");
+    return 0;
   }
 }
 
 module.exports = {
   JRPC
+}
+
+// test
+if (!module.parent){ // if we are run as a script, then test
+  let jrpc = new JRPC;
+  jrpc.startServer();
 }
