@@ -76,7 +76,6 @@ class Hardware extends JRPC {
   @return 0 if not turned on, 1 on success
   */
   turnOnBC(which){
-    console.log('Hardware::turnOnBC : '+which);
     if (this.client)
       return super.turnOnBC(which);
     if (which<0 || which>=this.bcGPIOs.length) // if which is negative or larger then the number we have
@@ -89,7 +88,6 @@ class Hardware extends JRPC {
   @return 0 if not turned on, 1 on success
   */
   turnOffBC(which){
-    console.log('Hardware::turnOffBC : '+which);
     if (this.client)
       return super.turnOffBC(which);
     if (which<0 || which>=this.bcGPIOs.length) // if which is negative or larger then the number we have

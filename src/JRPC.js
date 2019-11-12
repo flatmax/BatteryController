@@ -142,7 +142,6 @@ class JRPC {
   @return 0 if not turned on, 1 on success
   */
   turnOnBC(which){
-    console.log('JRPC::turnOnBC : '+which);
     if (!this.client & !this.server)
       throw(new Error('no client or server present - oops'));
     if (this.client)
@@ -157,7 +156,6 @@ class JRPC {
   @return 0 if not turned on, 1 on success
   */
   turnOffBC(which){
-    console.log('JRPC::turnOffBC : '+which);
     if (!this.client & !this.server)
       throw(new Error('no client or server present - oops'));
     if (this.client)
@@ -172,7 +170,6 @@ class JRPC {
   @return 0 if not turned on, -1 on success
   */
   turnOnUI(which){
-    console.log('JRPC::turnOnUI : '+which);
     if (!this.client & !this.server)
       throw(new Error('no client or server present - oops'));
     if (this.client)
@@ -187,7 +184,6 @@ class JRPC {
   @return 0 if not turned on, -1 on success
   */
   turnOffUI(which){
-    console.log('JRPC::turnOffUI : '+which);
     if (!this.client & !this.server)
       throw(new Error('no client or server present - oops'));
     if (this.client)
