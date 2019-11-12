@@ -14,36 +14,26 @@ if (!module.parent){ // if we are run as a script, then test
   let hCont = new HardwareController;
   hCont.addHardware(hCli);
 
-  hCont.setRunLevel(-4).then((r)=>{
-    console.log('runLevel = '+r);
-    return hCont.dumpState();
-  }).then(s=>{
-    console.log(s)
-  });
-  // let batteryController = new BatteryControllerEnvoyMeter(ip, hc);
-  // batteryController.setBaseLogFile('/root/batteryLog');
-  // setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
-  //
-  // function turnOff(hardware){
-  //   hardware.turnOffAll();
-  // }
-  //
-  // // process.on('SIGKILL', () => {
-  // //   console.log('sigkill')
-  // //   turnOff(hardware);
-  // // })
-  // process.on('SIGTERM', () => {
-  //   console.log('sigterm')
-  //   turnOff(hardware);
-  // })
-  // process.on('exit', (code) => {
-  //   console.log('exit')
-  //   turnOff(hardware);
+  // hCont.setRunLevel(-4).then((r)=>{
+  //   console.log('runLevel = '+r);
+  //   return hCont.dumpState();
+  // }).then(s=>{
+  //   console.log(s)
   // });
-  //
-  // // test exit
-  // // setTimeout(() => {
-  // //       // process.exit(0);
-  // //       throw new Error('throw exit');
-  // //     }, 6000).unref();
+  let batteryController = new BatteryControllerEnvoyMeter(host, hCont);
+  batteryController.setBaseLogFile('/root/batteryLog');
+  setInterval(batteryController.processHouseStats.bind(batteryController), 2000);
+
+  function turnOff(hardware){
+    hardware.turnOffAll();
+  }
+
+  process.on('SIGTERM', () => {
+    console.log('sigterm')
+    turnOff(hardware);
+  })
+  process.on('exit', (code) => {
+    console.log('exit')
+    turnOff(hardware);
+  });
 }
