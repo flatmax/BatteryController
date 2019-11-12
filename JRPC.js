@@ -78,7 +78,7 @@ class JRPC {
       dumpState: (args)=>{
         return new Promise((resolve, reject) => {
           let s=this.dumpState();
-          console.log('s '+s)
+          console.log(new Date()+'\n'+s);
           resolve(s);
         });
       }
@@ -203,10 +203,9 @@ class JRPC {
   dumpState(){
     if (!this.client & !this.server)
       throw(new Error('no client or server present - oops'));
-    if (this.client){
-      let s = this.client.request('dumpState', []);
-      return s;
-    } else // server
+    if (this.client)
+      return this.client.request('dumpState', []);
+    else // server
       console.log("JRPC::dumpState : not overloaded, returning ''");
     return '';
   }
