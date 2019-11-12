@@ -100,7 +100,6 @@ class Hardware extends JRPC {
   @return 0 if not turned on, -1 on success
   */
   turnOnUI(which){
-    console.log('Hardware::turnOnUI : '+which);
     if (this.client)
       return super.turnOnUI(which);
     if (which<0 || which>=this.uiGPIOs.length) // if which is negative or larger then the number we have
@@ -113,7 +112,6 @@ class Hardware extends JRPC {
   @return 0 if not turned on, -1 on success
   */
   turnOffUI(which){
-    console.log('Hardware::turnOffUI : '+which);
     if (this.client)
       return super.turnOffUI(which);
     if (which<0 || which>=this.uiGPIOs.length) // if which is negative or larger then the number we have
