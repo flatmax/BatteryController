@@ -108,8 +108,9 @@ class HardwareController {
   */
   getBCCnt(){
     let N=0;
-    this.hardware.forEach((hw) => {
-      N+=hw.getBCCnt();
+    this.hardware.forEach(async (hw) => {
+      let res = await hw.getBCCnt();
+      N+= res.result;
     });
     return N;
   }
@@ -119,8 +120,9 @@ class HardwareController {
   */
   getUICnt(){
     let N=0;
-    this.hardware.forEach((hw) => {
-      N+=hw.getUICnt();
+    this.hardware.forEach(async (hw) => {
+      let res = await hw.getUICnt();
+      N+=res.result;
     });
     return N;
   }
