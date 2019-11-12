@@ -38,8 +38,14 @@ class BatteryController {
 
     this.hardwareController=hardwareController;
 
-    this.Nui=-this.hardwareController.getUICnt(); // Limit the total number of uInverters available to that reported by the hardware controller (positive count but here should be a negative value)
-    this.Nbc=this.hardwareController.getBCCnt(); // Limit the total number of battery chargers  available to that reported by the hardware controller
+    this.hardwareController.getUICnt() // Limit the total number of uInverters available to that reported by the hardware controller (positive count but here should be a negative value)
+    .then((Nui)=>{
+      this.Nui=-Nui;
+    });
+    this.hardwareController.getBCCnt() // Limit the total number of battery chargers  available to that reported by the hardware controller
+    .then((Nbc)=>{
+      this.Nbc=Nbc;
+    });
     this.meter={}; // hold the meter data
   }
 

@@ -23,7 +23,6 @@ class HardwareController {
   @return The new value for r
   */
   async setRunLevel(r){
-    console.log('HardwareController::setRunLevel : '+r)
     let shutdownPs = [];
     // first turn off what must be off
     if (r>=0) // we are charging, turn off all uInv
@@ -107,24 +106,24 @@ class HardwareController {
   /** Get the total number of battery chargers from all hardware
   @return The number of battery chargers
   */
-  getBCCnt(){
+  async getBCCnt(){
     let N=0;
-    this.hardware.forEach(async (hw) => {
+    await Promise.all(this.hardware.map(async (hw) => {
       let res = await hw.getBCCnt();
       N+= res.result;
-    });
+    }));
     return N;
   }
 
   /** Get the total number of micro inverters from all hardware
   @return The number of micro inverters on the system
   */
-  getUICnt(){
+  async getUICnt(){
     let N=0;
-    this.hardware.forEach(async (hw) => {
+    await Promise.all(this.hardware.map(async (hw) => {
       let res = await hw.getUICnt();
       N+=res.result;
-    });
+    }));
     return N;
   }
 }
