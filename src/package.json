@@ -12,6 +12,8 @@
   "author": "Matt Flax <flatmax@flatmax.org>",
   "license": "ISC",
   "dependencies": {
-    "jayson": "^3.1.2"
+    "ip": "^1.1.5",
+    "jayson": "^3.1.2",
+    "multicast-dns": "^7.2.0"
   }
 }

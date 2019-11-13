@@ -1,20 +1,16 @@
 "use strict";
 
 const jayson = require('jayson/promise');
+const MDNS = require('./MDNS').MDNS;
 
 /** JRPC protocol for getting hardware talking to a hardware controller over the network
 */
-class JRPC {
-  /** Constructor sets the default port
-  */
-  constructor(){
-      this.port=9100;
-  }
-
+class JRPC extends MDNS {
   /** Connect to a server
   @param params host and port if required for example params = {host : "127.0.0.1", port: 9100}
   */
   connectToServer(params){
+    console.log('JRPC::connectToServer : '+JSON.stringify(params));
     let cp={};
     if (params){
       if (params.port)
@@ -86,6 +82,7 @@ class JRPC {
 
     this.server.http().listen(this.port, ()=>{
       console.log('JRPC::startServer : listening on port '+this.port);
+      this.createMDNSServer();
     });
   }
 

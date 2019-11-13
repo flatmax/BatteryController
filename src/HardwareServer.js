@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 
 let Hardware = require('./Hardware').Hardware;

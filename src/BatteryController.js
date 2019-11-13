@@ -38,14 +38,6 @@ class BatteryController {
 
     this.hardwareController=hardwareController;
 
-    this.hardwareController.getUICnt() // Limit the total number of uInverters available to that reported by the hardware controller (positive count but here should be a negative value)
-    .then((Nui)=>{
-      this.Nui=-Nui;
-    });
-    this.hardwareController.getBCCnt() // Limit the total number of battery chargers  available to that reported by the hardware controller
-    .then((Nbc)=>{
-      this.Nbc=Nbc;
-    });
     this.meter={}; // hold the meter data
   }
 
@@ -77,6 +69,19 @@ class BatteryController {
   @param data The json data describing the state of the house
   */
   processHouseStats(){
+    if (this.Nui==null)
+      return this.hardwareController.getUICnt() // Limit the total number of uInverters available to that reported by the hardware controller (positive count but here should be a negative value)
+      .then((Nui)=>{
+        this.Nui=-Nui;
+        return this.processHouseStats();
+      });
+    if (this.Nbc==null)
+      return this.hardwareController.getBCCnt() // Limit the total number of battery chargers  available to that reported by the hardware controller
+      .then((Nbc)=>{
+        this.Nbc=Nbc;
+        return this.processHouseStats();
+      });
+
     return this.getData().then((stats) => {
       return this.updateState(stats.prodW, stats.consW, stats.netW);
     })
@@ -109,6 +114,7 @@ class BatteryController {
     // console.log(totalCons)
     // console.log(this.uiW)
     // console.log(this.Nbc)
+    // console.log(this.Nui)
     // console.log(this.pumpGap)
     // if (totalCons>0 && totalCons>-this.uiW && this.runLevel>this.Nui) // we can drop run level towards deepest discharging
     // Do we have any consumption ? Then move towards dischargning

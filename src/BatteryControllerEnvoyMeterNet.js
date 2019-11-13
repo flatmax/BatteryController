@@ -4,23 +4,13 @@ const http = require('http');
 const BatteryControllerEnvoyMeter = require('./BatteryControllerEnvoyMeter').BatteryControllerEnvoyMeter
 
 if (!module.parent){ // if we are run as a script, then run as the networked battery controller
-  let HardwareClient = require('./HardwareClient').HardwareClient;
-  let port = 9001; // server port
-  let host = "192.168.1.187";
-  let hCli = new HardwareClient;
-  hCli.connectToServer({host:host, port:port});
-
   let HardwareController = require('./HardwareController').HardwareController;
   let hCont = new HardwareController;
-  hCont.addHardware(hCli);
+  hCont.findAvailableServers();
 
-  // hCont.setRunLevel(-4).then((r)=>{
-  //   console.log('runLevel = '+r);
-  //   return hCont.dumpState();
-  // }).then(s=>{
-  //   console.log(s)
-  // });
-  let batteryController = new BatteryControllerEnvoyMeter(host, hCont);
+  // let envoyIP = '192.168.1.60';
+  let envoyHost = 'envoy.local';
+  let batteryController = new BatteryControllerEnvoyMeter(envoyHost, hCont);
   batteryController.setBaseLogFile('/tmp/batteryLog');
   setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
 

@@ -3,6 +3,8 @@
 const JRPC = require('./JRPC').JRPC;
 
 const jrpc = new JRPC;
+jrpc.findAvailableServers();
+return
 const host = "192.168.1.183"
 jrpc.connectToServer({host:host, port:9001});
 let reqs = [jrpc.getBCCnt(),

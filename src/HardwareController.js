@@ -1,14 +1,25 @@
 'use strict';
 
-class HardwareController {
+const MDNS = require('./MDNS').MDNS;
+const HardwareClient = require('./HardwareClient').HardwareClient;
+
+class HardwareController extends MDNS {
   constructor(){
+    super();
     this.hardware = [];
+  }
+
+  connectToServer(params){
+    console.log(params);
+    let hCli = new HardwareClient;
+    hCli.connectToServer(params);
+    this.addHardware(hCli);
   }
 
   /** Add hardware to the HardwareController
   */
   addHardware(hw){
-    console.log(hw.constructor.name)
+    console.log('Adding '+hw.constructor.name)
     if (hw.constructor.name != 'Hardware' && hw.constructor.name != 'HardwareClient')
       throw new Error(hw.constructor.name+' is not a Hardware instance');
     this.hardware.push(hw);
