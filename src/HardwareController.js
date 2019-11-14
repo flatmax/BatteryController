@@ -68,17 +68,13 @@ class HardwareController extends MDNS {
       let nUIs=[];
       nUIsIn.forEach((nui)=>nUIs.push(nui.result));
       // Turn on how ever many devices are indicated - iterating through hardware
-      // stop at run level 0 if we hit it !
-      for (let h=0; h<this.hardware.length && r!=0; h++) {
-        let r0=r;
+      for (let h=0; h<this.hardware.length; h++) {
         let C=Math.max(nBCs[h], nUIs[h]);
         for (let c=0; c<C; c++){
-          if (r==0)
-            if (r0>0) // we are consuming, so turn off excess chargers
+          if (r==0){ // turn everything else off
               await this.hardware[h].turnOffBC(c);
-            else // we are producing so turn off excess micro inverters
               await this.hardware[h].turnOffUI(c);
-          else {
+          } else {
             let res;
             // console.log('enter h='+h+' c='+c+' r='+r)
             if (r>0) // we are consuming, so turn on chargers
