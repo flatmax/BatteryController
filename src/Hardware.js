@@ -10,6 +10,7 @@ inherits the JRPC class for comms over a network if necessary
 class Hardware extends JRPC {
   constructor(jsonDefinition){
     super();
+    this.watchdogSleepTime=30000; // ms watchdog sleep timer
     if (jsonDefinition == null){
       console.log('Hardware::constructor : running as a network client');
       return;
@@ -24,8 +25,7 @@ class Hardware extends JRPC {
     this.gpio = new GPIO;
 
     // set to an idle state
-    this.bcGPIOs.forEach((gpio) => {this.gpio.write(gpio, 0);})
-    this.uiGPIOs.forEach((gpio) => {this.gpio.write(gpio, 0);})
+    this.turnOffAll();
   }
 
   /** Turns off every device
@@ -119,13 +119,35 @@ class Hardware extends JRPC {
     return -this.setGPIO(this.uiGPIOs[which], 0);
   }
 
+  /** Called when the system has been inactive for more then watchdogSleepTime
+  Turns all GPIOs off as a safety mechanism
+  */
+  watchdogTimeout(){
+      console.log('Hardware::watchdogTimeout : '+ new Date() +' turning all GPIOs off');
+      this.removeWatchdog();
+      this.turnOffAll();
+  }
+
+  /** If a watchdog is active, then remove it
+  */
+  removeWatchdog(){
+    if (this.watchdogID){ // clear the watchdog timer
+      let wid = this.watchdogID;
+      this.watchdogID=null;
+      clearInterval(wid);
+    }
+  }
+
   /** Set a GPIO line
   @param which GPIO
   @param the new value
   @return 0 on failure 1 on success
   */
   setGPIO(which, val){
-    // console.log('set GPIO'+which+' '+val)
+    // set a watchdog timerout to turn everything off if the system isn't active
+    this.removeWatchdog();
+    this.watchdogID=setInterval(this.watchdogTimeout.bind(this), this.watchdogSleepTime);
+
     try {
       this.gpio.write(which, val);
     } catch (err) {
