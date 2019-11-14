@@ -7,6 +7,7 @@ class MDNS {
   */
   constructor (){
     this.serviceName='HardwareServer.local';
+    this.name = require('os').hostname();
     this.port=9100;
     this.mdnsOpt={ multicast: true, // use udp multicasting
                     // interface: '192.168.0.2' // explicitly specify a network interface. defaults to all

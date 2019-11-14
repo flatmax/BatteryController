@@ -26,8 +26,6 @@ class HardwareController extends MDNS {
     this.hardware.sort((a, b) => {
       var nameA = a.name.toUpperCase(); // ignore case
       var nameB = b.name.toUpperCase(); // ignore case
-      console.log(nameA)
-      console.log(nameB)
       if (nameA < nameB)
         return -1;
       if (nameA > nameB)
