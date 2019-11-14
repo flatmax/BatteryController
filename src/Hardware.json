@@ -1,6 +1,5 @@
 {
-  "name" : "baseLoad0",
-  "baseLoad" : 1,
+  "name" : "battery0",
   "bcW" : 100,
   "bcWComment" : "Battery charger power consumed (positive Watts)",
   "bcGPIOs" : [12, 6, 5],
