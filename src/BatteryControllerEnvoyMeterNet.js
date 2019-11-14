@@ -11,7 +11,7 @@ if (!module.parent){ // if we are run as a script, then run as the networked bat
   // let envoyIP = '192.168.1.60';
   let envoyHost = 'envoy.local';
   let batteryController = new BatteryControllerEnvoyMeter(envoyHost, hCont);
-  batteryController.setBaseLogFile('/tmp/batteryLog');
+  batteryController.setBaseLogFile('/root/batteryLog');
   setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
 
   function turnOff(hardware){
