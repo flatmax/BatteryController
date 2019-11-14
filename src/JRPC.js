@@ -19,6 +19,7 @@ class JRPC extends MDNS {
         cp.host=params.host;
     }
     cp.port=this.port;
+    this.name = params.name;
     this.client = jayson.client.http(cp);
   }
 
@@ -76,6 +77,11 @@ class JRPC extends MDNS {
           let s=this.dumpState();
           console.log(new Date()+'\n'+s);
           resolve(s);
+        });
+      },
+      getName: (args)=>{
+        return new Promise((resolve, reject) => {
+          resolve(this.getName());
         });
       }
     });
@@ -202,6 +208,20 @@ class JRPC extends MDNS {
       console.log("JRPC::dumpState : not overloaded, returning ''");
     return '';
   }
+
+  /** Get the name of this hardware
+  @return The name
+  */
+  getName(){
+    if (!this.client & !this.server)
+      throw(new Error('no client or server present - oops'));
+    if (this.client)
+      return this.client.request('getName', []);
+    else // server
+      console.log("JRPC::getName : not overloaded, returning -1");
+    return -1;
+  }
+
 }
 
 module.exports = {

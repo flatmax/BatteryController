@@ -7,7 +7,6 @@ class MDNS {
   */
   constructor (){
     this.serviceName='HardwareServer.local';
-    this.serviceDetailName='battery-hardware';
     this.port=9100;
     this.mdnsOpt={ multicast: true, // use udp multicasting
                     // interface: '192.168.0.2' // explicitly specify a network interface. defaults to all
@@ -28,15 +27,18 @@ class MDNS {
     this.mdns.on('response', (response) => {
       let params={};
       response.answers.filter(element => {
-        if (element.name === this.serviceDetailName)
-          params.port = element.data.port;
-        else if (element.name === this.serviceName)
+        if (element.name === this.serviceName)
           params.host=element.data;
+        else
+          if (element.data && element.type === 'SRV') {
+            params.port = element.data.port;
+            params.name = element.name;
+          }
       });
-      if (params.port && params.host)
+      if (params.port && params.host && params.name)
         this.connectToServer(params);
       else
-        console.log('MDNS response didn\'t contain both a port and host, not connecting '+params)
+        console.log('MDNS response didn\'t contain a port, host and name, not connecting '+params)
       // console.log(response.answers[0].data)
     });
     this.mdns.query(this.serviceName, 'A');
@@ -50,7 +52,8 @@ class MDNS {
     this.mdns = multicastdns(opt);
     // setup the response
     const ipAdd=require('ip').address();
-    let response = {answers: [{name: this.serviceDetailName, type: 'SRV',
+    console.log()
+    let response = {answers: [{name: this.name, type: 'SRV',
                                 data: { port:this.port, weigth: 0, priority: 10, target: 'battery' } },
                               { name: this.serviceName, type:'A', data: ipAdd } ]};
     this.mdns.on('query', (query) => {
