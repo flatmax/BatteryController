@@ -178,6 +178,15 @@ class Hardware extends JRPC {
     s+=' ]'
     return s;
   }
+
+  /** Get the name of this hardware
+  @return The name
+  */
+  getName(){
+    if (this.client) // the client returns whatever the network returns
+      return super.getName();
+    return this.name;
+  }
 }
 
 module.exports = {
