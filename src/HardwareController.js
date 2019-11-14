@@ -88,8 +88,8 @@ class HardwareController extends MDNS {
             r-=res.result;
           }
         }
-        return r;
       };
+      return r;
     });
   }
 
