@@ -22,16 +22,25 @@ class HardwareController extends MDNS {
     console.log('Adding '+hw.constructor.name)
     if (hw.constructor.name != 'Hardware' && hw.constructor.name != 'HardwareClient')
       throw new Error(hw.constructor.name+' is not a Hardware instance');
-    this.hardware.push(hw);
-    this.hardware.sort((a, b) => {
-      var nameA = a.name.toUpperCase(); // ignore case
-      var nameB = b.name.toUpperCase(); // ignore case
-      if (nameA < nameB)
-        return -1;
-      if (nameA > nameB)
-        return 1;
-      return 0;  // names must be equal
-    });
+    if (this.hardware.length==0 || this.hardware.find(el=>{return el.name === hw.name})==null){
+      this.hardware.push(hw);
+      this.hardware.sort((a, b) => {
+        var nameA = a.name.toUpperCase(); // ignore case
+        var nameB = b.name.toUpperCase(); // ignore case
+        if (nameA < nameB)
+          return -1;
+        if (nameA > nameB)
+          return 1;
+        return 0;  // names must be equal
+      });
+    }
+  }
+
+  /** Method to find available hardware servers and populate a full list
+  */
+  refreshHardwareList(){
+    this.hardware=[];
+    this.findAvailableServers();
   }
 
   /** Given a run level, turn on either consume power (r>0) or generate power (r<0).
