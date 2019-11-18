@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Matt Flax <flatmax@flatmax.org>",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "ip": "^1.1.5",
     "jayson": "^3.1.2",
