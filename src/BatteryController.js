@@ -128,8 +128,10 @@ class BatteryController {
     this.hardwareController.setRunLevel(this.runLevel)
     .then(()=>{
       this.logFileRotate(); // daily log file rotation
-      this.logState();
-    });
+      return this.logState();
+    }).then(()=>{ // update the list of batteries on the network
+      this.hardwareController.refreshHardwareList();
+    }).catch(err=> console.log(err));
   }
 
   /** Sets the logFileName to the baseLogFileName+"yyyy-mm-dd.txt"
@@ -169,6 +171,7 @@ class BatteryController {
     else {
       console.log(s);
     }
+    return;
   }
 
   reportProdCons(){
