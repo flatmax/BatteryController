@@ -103,6 +103,13 @@ class BatteryController {
       .then((Nui)=>{
         this.Nui=-Nui;
         return this.processHouseStats();
+      }).catch((err) => {
+        if (err.errno==='ECONNREFUSED'){
+          console.log('can\'t contact '+err.address);
+          console.log('Dropping that hardware server');
+          this.hardwareController.removeHardware(err.address);
+        } else
+          console.log("Unknown Error: " + err.message);
       });
     if (this.Nbc==null)
       return this.hardwareController.getBCCnt() // Limit the total number of battery chargers  available to that reported by the hardware controller
@@ -115,8 +122,12 @@ class BatteryController {
       return this.updateState(stats.prodW, stats.consW, stats.netW);
     })
     .catch((err) => {
-      console.log("Error: " + err.message);
-      reject(err);
+      if (err.erno==='ECONNREFUSED'){
+        console.log('can\'t contact '+err.address);
+        console.log('Dropping that hardware server');
+        this.hardwareController.removeHardware(err.address);
+      } else
+        console.log("Unknown Error: " + err.message);
     });
   }
 
@@ -160,7 +171,14 @@ class BatteryController {
       return this.logState();
     }).then(()=>{ // update the list of batteries on the network
       this.hardwareController.refreshHardwareList();
-    }).catch(err=> console.log(err));
+    }).catch(err=>{
+      if (err.errno==='ECONNREFUSED'){
+        console.log('can\'t contact '+err.address);
+        console.log('Dropping that hardware server');
+        this.hardwareController.removeHardware(err.address);
+      } else
+        console.log("Unknown Error: " + err.message);
+    });
   }
 
   /** Sets the logFileName to the baseLogFileName+"yyyy-mm-dd.txt"
