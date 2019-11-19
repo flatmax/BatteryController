@@ -39,9 +39,7 @@ class MDNS {
     this.name = require('os').hostname();
     this.port=9100;
     this.mdnsOpt={ multicast: true, // use udp multicasting
-                    // interface: '192.168.0.2' // explicitly specify a network interface. defaults to all
-                    port: this.port, // set the udp port
-                    // ip: ipAdd, // set the udp ip
+                    // port: this.port, // set the udp port
                     ttl: 255, // set the multicast ttl
                     reuseAddr: true // set the reuseAddr option when creating the socket (requires node >=0.11.13)
                   }
@@ -69,7 +67,6 @@ class MDNS {
         this.connectToServer(params);
       else
         console.log('MDNS response didn\'t contain a port, host and name, not connecting '+params)
-      // console.log(response.answers[0].data)
     });
     this.mdns.query(this.serviceName, 'A');
   }
