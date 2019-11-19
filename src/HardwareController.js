@@ -65,6 +65,20 @@ class HardwareController extends MDNS {
     }
   }
 
+  /** Drop a hardware server from the hardware list
+  @param add The server's network address
+  */
+  removeHardware(add){
+    console.log('HardwareController::removeHardware '+add)
+    let index=-1;
+    for (let i=0; i<this.hardware.length; i++)
+      if  (this.hardware[i].client.options.host === add)
+        index=i;
+    if (index>=0)
+      this.hardware.splice(index,1);
+  }
+
+
   /** Method to find available hardware servers and populate a full list
   */
   refreshHardwareList(){
