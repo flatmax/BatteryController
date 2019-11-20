@@ -49,10 +49,10 @@ if (!module.parent){ // if we are run as a script, then run as the networked bat
 
   process.on('SIGTERM', () => {
     console.log('sigterm')
-    turnOff(hardware);
+    turnOff(hCont);
   })
   process.on('exit', (code) => {
     console.log('exit')
-    turnOff(hardware);
+    turnOff(hCont);
   });
 }
