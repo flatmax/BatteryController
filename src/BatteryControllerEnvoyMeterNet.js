@@ -37,22 +37,30 @@ if (!module.parent){ // if we are run as a script, then run as the networked bat
   let hCont = new HardwareController;
   hCont.findAvailableServers();
 
-  // let envoyIP = '192.168.1.60';
   let envoyHost = 'envoy.local';
   let batteryController = new BatteryControllerEnvoyMeter(envoyHost, hCont);
   batteryController.setBaseLogFile('/root/batteryLog');
-  setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
+  let intID = setInterval(batteryController.processHouseStats.bind(batteryController), 10000);
 
-  function turnOff(hardware){
-    hardware.turnOffAll();
-  }
+  // // shutdown every hour
+  // const util = require('util');
+  // const setTimeoutPromise = util.promisify(setTimeout);
+  //
+  // let hourMS=60*60*1000;
+  // setTimeoutPromise(hourMS, intID).then((intID) => {
+  //   clearInterval(intID);
+  // });
 
-  process.on('SIGTERM', () => {
-    console.log('sigterm')
-    turnOff(hCont);
-  })
-  process.on('exit', (code) => {
-    console.log('exit')
-    turnOff(hCont);
-  });
+  // function turnOff(hardware){
+  //   hardware.turnOffAll();
+  // }
+  //
+  // process.on('SIGTERM', () => {
+  //   console.log('sigterm')
+  //   turnOff(hCont);
+  // })
+  // process.on('exit', (code) => {
+  //   console.log('exit')
+  //   turnOff(hCont);
+  // });
 }
