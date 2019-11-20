@@ -38,9 +38,10 @@ class MDNS {
     this.serviceName='HardwareServer.local';
     this.name = require('os').hostname();
     this.port=9100;
+    this.ttl=1;
     this.mdnsOpt={ multicast: true, // use udp multicasting
                     // port: this.port, // set the udp port
-                    ttl: 255, // set the multicast ttl
+                    ttl: this.ttl, // set the multicast ttl
                     reuseAddr: true // set the reuseAddr option when creating the socket (requires node >=0.11.13)
                   }
   }
