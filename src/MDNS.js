@@ -49,26 +49,28 @@ class MDNS {
   /** Find available servers and connect to whichever servers are possible
   */
   findAvailableServers(){
-    this.mdns = new multicastdns(this.mdnsOpt);
-    this.mdns.on('warning', function (err) {
-      console.log(err.stack)
-    });
-    this.mdns.on('response', (response) => {
-      let params={};
-      response.answers.filter(element => {
-        if (element.name === this.serviceName)
-          params.host=element.data;
-        else
-          if (element.data && element.type === 'SRV') {
-            params.port = element.data.port;
-            params.name = element.name;
-          }
+    if (!this.mdns) {
+      this.mdns = new multicastdns(this.mdnsOpt);
+      this.mdns.on('warning', function (err) {
+        console.log(err.stack)
       });
-      if (params.port && params.host && params.name)
-        this.connectToServer(params);
-      else
-        console.log('MDNS response didn\'t contain a port, host and name, not connecting '+params)
-    });
+      this.mdns.on('response', (response) => {
+        let params={};
+        response.answers.filter(element => {
+          if (element.name === this.serviceName)
+            params.host=element.data;
+          else
+            if (element.data && element.type === 'SRV') {
+              params.port = element.data.port;
+              params.name = element.name;
+            }
+        });
+        if (params.port && params.host && params.name)
+          this.connectToServer(params);
+        else
+          console.log('MDNS response didn\'t contain a port, host and name, not connecting '+params)
+      });
+    }
     this.mdns.query(this.serviceName, 'A');
   }
 
