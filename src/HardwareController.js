@@ -33,6 +33,8 @@ const MDNS = require('./MDNS').MDNS;
 const HardwareClient = require('./HardwareClient').HardwareClient;
 
 class HardwareController extends MDNS {
+  /** Construct the hardwareController
+  */
   constructor(){
     super();
     this.hardware = [];
@@ -201,38 +203,8 @@ module.exports = {
 }
 
 if (!module.parent){ // if we are run as a script, then test
-  let Hardware = require('./Hardware').Hardware;
-  let hardware = new Hardware('Hardware.json');
+  let hCont = new HardwareController;
+  hCont.findAvailableServers();
 
-  let hc = new HardwareController;
-  hc.addHardware(hardware);
-  // //hc.addHardware(new HardwareController);
-  // console.log(hc)
-  let r;
-  // // r=hc.setRunLevel(1);
-  // // hc.dumpState(1);
-  // // r=hc.setRunLevel(-1);
-  // // hc.dumpState(-1);
-  // // r=hc.setRunLevel(-2);
-  // // hc.dumpState(-2);
-  // // r=hc.setRunLevel(-3);
-  // // hc.dumpState(-3);
-  // // r=hc.setRunLevel(-5);
-  // // hc.dumpState(-5);
-  // // r=hc.setRunLevel(1);
-  // // hc.dumpState(1);
-  // // r=hc.setRunLevel(2);
-  // // hc.dumpState(2);
-  // // r=hc.setRunLevel(3);
-  // // hc.dumpState(3);
-  // // r=hc.setRunLevel(5);
-  // // hc.dumpState(5);
-  // r=hc.setRunLevel(-1);
-  // console.log(hc.dumpState(-1));
-  // r=hc.setRunLevel(-2);
-  // console.log(hc.dumpState(-2));
- hc.setRunLevel(-3);
-  // console.log(hc.dumpState(-3));
-  // r=hc.setRunLevel(0);
-  // console.log(hc.dumpState(0));
+  let intID = setInterval(hCont.refreshHardwareList.bind(hCont), 10000);
 }
