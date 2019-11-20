@@ -39,7 +39,7 @@ inherits the JRPC class for comms over a network if necessary
 class Hardware extends JRPC {
   constructor(jsonDefinition){
     super();
-    this.watchdogSleepTime=30000; // ms watchdog sleep timer
+    this.watchdogSleepTime=120000; // ms watchdog sleep timer
     if (jsonDefinition == null){
       console.log('Hardware::constructor : running as a network client');
       return;
