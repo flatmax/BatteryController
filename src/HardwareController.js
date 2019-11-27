@@ -130,24 +130,38 @@ class HardwareController extends MDNS {
       nBCsIn.forEach((nbc)=>nBCs.push(nbc.result));
       let nUIs=[];
       nUIsIn.forEach((nui)=>nUIs.push(nui.result));
+
+      // work out the absolute maximum number of BCs or UIs
+      let C=0;
+      for (let h=0; h<this.hardware.length; h++)
+        if (Math.max(nBCs[h], nUIs[h])>C)
+          C=Math.max(nBCs[h], nUIs[h]);
+
       // Turn on how ever many devices are indicated - iterating through hardware
-      for (let h=0; h<this.hardware.length; h++) {
-        let C=Math.max(nBCs[h], nUIs[h]);
-        for (let c=0; c<C; c++){
-          if (r==0){ // turn everything else off
-              await this.hardware[h].turnOffBC(c);
-              await this.hardware[h].turnOffUI(c);
-          } else {
-            let res;
-            // console.log('enter h='+h+' c='+c+' r='+r)
-            if (r>0) // we are consuming, so turn on chargers
-              res = await this.hardware[h].turnOnBC(c);
-            else // we are generating, so turn on uInv
-              res = await this.hardware[h].turnOnUI(c); // turnOnUI returns -1 on success, here r is increased
-            r-=res.result;
-          }
-        }
-      };
+      // Turn on battery chargers if the runlevel is > 0
+      // Make sure we turn on chargers for one hardware at a time - rather then part of a hardware each time
+      if (r>0) {
+        for (let h=0; h<this.hardware.length; h++)
+          for (let c=0; c<C; c++)
+            if (r==0){ // turn everything else off
+                await this.hardware[h].turnOffBC(c);
+                await this.hardware[h].turnOffUI(c);
+            } else {
+              let res = await this.hardware[h].turnOnBC(c);
+              r-=res.result;
+            }
+      } else { // r<0 we are producing, so turn on micro inverters
+        let h=0;
+        for (let c=0; c<C; c++)
+          for (let h=0; h<this.hardware.length; h++)
+            if (r==0){ // turn everything else off
+                await this.hardware[h].turnOffBC(c);
+                await this.hardware[h].turnOffUI(c);
+            } else {
+              let res = await this.hardware[h].turnOnUI(c); // turnOnUI returns -1 on success, here r is increased
+              r-=res.result;
+            }
+      }
       return r;
     });
   }
