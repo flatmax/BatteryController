@@ -15,5 +15,7 @@ you like.
 
 ## Web application
 
+Still not functional - requires more work.
+
 webApp provides a simple web application. It allows you to serve up log data
 from the battery controller and look at a graphical history of the system state.

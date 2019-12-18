@@ -1,3 +1,5 @@
+This webapplication requires more work before it is useful.
+
 # \<BatteryController\>
 
 Visualise battery log data
