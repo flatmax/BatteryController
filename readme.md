@@ -21,3 +21,7 @@ Still not functional - requires more work.
 
 webApp provides a simple web application. It allows you to serve up log data
 from the battery controller and look at a graphical history of the system state.
+
+## buildroot bootable SDCard image
+
+Build an sdCard to boot off [using this buildroot external repo](https://github.com/Audio-Injector/RaspberryPi.buildroot.external/tree/BatteryController).
