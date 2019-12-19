@@ -13,6 +13,8 @@ you like.
 
 ## Free hardware
 
+See [BatteryController.electronics](https://github.com/flatmax/BatteryController.electronics)
+
 ## Web application
 
 Still not functional - requires more work.
