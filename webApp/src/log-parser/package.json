@@ -1,5 +1,6 @@
 {
   "name": "log-parser",
+  "version": "1.0.0",
   "main": "log-parser.js",
   "dependencies": {
     "@polymer/polymer": "^3.0.0"

@@ -1,5 +1,6 @@
 {
   "name": "plot-power",
+  "version": "1.0.0",
   "description": "Plot battery logs",
   "main": "plot-power.js",
   "dependencies": {
