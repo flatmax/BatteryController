@@ -29,10 +29,10 @@ export class Table {
   }
 
   Date(tokens){
-    if (this.record!==null && this.record.Date!=null)
-      this.records.push(this.record);
     this.record={};
     this.record.Date=(new Date(tokens[0])).getTime();
+    if (this.record!==null && this.record.Date!=null)
+      this.records.push(this.record);
   }
 
   Battery(tokens){
@@ -69,17 +69,17 @@ export class Table {
   }
 
   uBattery(tokens){
-    if (this.record && this.record.uBattery){
-      this.record=null;
-    }
     if (this.record==null || this.record.Date==null){
       console.log(tokens)
       console.log('skipping uBattery as date is null')
       return;
     }
-    this.record.uBattery={};
-    this.record.uBattery.name = tokens[0];
-    this.record.uBattery.chargerState = tokens.slice(4,7);
-    this.record.uBattery.inverterState = tokens.slice(11,14);
+    if (!this.record.uBattery)
+      this.record.uBattery=[];
+    this.record.uBattery.push({
+      name : tokens[0],
+      chargerState : tokens.slice(4,7),
+      inverterState : tokens.slice(11,14)
+    })
   }
 }
