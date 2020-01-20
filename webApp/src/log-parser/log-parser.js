@@ -9,7 +9,7 @@ import {Table} from './Table.js';
  * @polymer
  * @demo demo/index.html
  */
-class LogParser extends PolymerElement {
+export class LogParser extends PolymerElement {
   static get template() {
     return html`
       <style>
