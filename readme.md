@@ -11,6 +11,9 @@ or a battery controller (files which inherit BatteryController.js).
 Typically there is one battery controller and as many networked batteries as
 you like.
 
+For a deep dive into the code, start by reading this comment block here :
+https://github.com/flatmax/BatteryController/blob/master/src/BatteryController.js#L34
+
 ## Free hardware
 
 See [BatteryController.electronics](https://github.com/flatmax/BatteryController.electronics)
