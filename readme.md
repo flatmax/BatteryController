@@ -1,6 +1,6 @@
 # Networked micro batteries
 
-This repository provides free software and open hardware for you to make your
+This repository provides free software and free hardware for you to make your
 own network of batteries.
 
 ## Free embedded software
