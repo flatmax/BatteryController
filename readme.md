@@ -3,6 +3,8 @@
 This repository provides free software and open hardware for you to make your
 own network of batteries.
 
+Get a top view of the project here : https://imgur.com/a/hNvbikY
+
 ## Free embedded software
 
 src has software to run either a networked battery (HardwareServer.js)
