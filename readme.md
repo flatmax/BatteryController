@@ -1,6 +1,6 @@
 # Networked micro batteries
 
-This repository provides free software and open hardware for you to make your
+This repository provides free software and free hardware for you to make your
 own network of batteries.
 
 Get a top view of the project here : https://imgur.com/a/hNvbikY
@@ -12,6 +12,9 @@ or a battery controller (files which inherit BatteryController.js).
 
 Typically there is one battery controller and as many networked batteries as
 you like.
+
+For a deep dive into the code, start by reading this comment block here :
+https://github.com/flatmax/BatteryController/blob/master/src/BatteryController.js#L34
 
 ## Free hardware
 
