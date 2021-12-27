@@ -3,7 +3,7 @@
 This repository provides free software and free hardware for you to make your
 own network of batteries.
 
-Get a top view of the project here : https://imgur.com/a/hNvbikY
+Get a top view of the project here : https://hackaday.io/project/182846-networked-home-battery-v2
 
 ## Free embedded software
 
