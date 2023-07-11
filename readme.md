@@ -14,7 +14,7 @@ Typically there is one battery controller and as many networked batteries as
 you like.
 
 For a deep dive into the code, start by reading this comment block here :
-https://github.com/flatmax/BatteryController/blob/master/src/BatteryController.js#L34
+https://github.com/flatmax/BatteryController/blob/master/src/BatteryController.js#L38
 
 ## Free hardware
 
